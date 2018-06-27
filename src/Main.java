@@ -1,20 +1,10 @@
-import db.MySqlConnection;
-import db.StockManager;
-
-import java.sql.SQLException;
+import beans.ReadJson;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws Exception {
 
-//        MySqlConnection mySqlConnection = new MySqlConnection();
-//
-//        mySqlConnection.connectToDatabase();
-
-
-        StockManager stockManager = new StockManager();
-
-        stockManager.displayAllRows();
-
+        ReadJson readJson = new ReadJson();
+        readJson.readJsonWithObjectMapper();
     }
 }
