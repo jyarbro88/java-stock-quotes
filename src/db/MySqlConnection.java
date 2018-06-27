@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class MySqlConnection {
 
-    public void connectToDatabase() throws SQLException {
+    public Connection connectToDatabase() throws SQLException {
         final String USERNAME = "joe";
         final String PASSWORD = "password";
         final String CONN_STRING = "jdbc:mysql://localhost/stock_info?useLegacyDatetimeCode=false&serverTimezone=UTC";
@@ -19,9 +19,10 @@ public class MySqlConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (connection != null) {
-                connection.close();
-            }
+//            if (connection != null) {
+//                connection.close();
+//            }
         }
+        return connection;
     }
 }
