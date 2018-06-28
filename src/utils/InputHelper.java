@@ -11,8 +11,7 @@ public class InputHelper {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private Connection connection = ConnectionManager.getConnection();
-
-//    private DisplayAll displayAll = new DisplayAll();
+    private DisplayAllRecords displayAllRecords = new DisplayAllRecords();
 
     public void getUserInput() throws IOException, SQLException {
 
@@ -31,35 +30,9 @@ public class InputHelper {
                 promptUserForTickerSymbolToSearch();
                 break;
             case "3":
-                displayAllRows();
-                break;
-//
-//            default:
-//                return false;
-        }
-    }
-
-    void askUserToContinue() throws IOException, SQLException {
-        System.out.println("Press 1 to continue: ");
-        System.out.println("Press 2 to exit: ");
-        String userInput = reader.readLine();
-
-        switch (userInput) {
-            case "1":
-                getUserInput();
-                break;
-            case "2":
-                exitProgram();
-                break;
-            default:
+                displayAllRecords.displayAllRows();
                 break;
         }
-    }
-
-    private void exitProgram() {
-
-        System.out.println("Exiting Application.");
-        ConnectionManager.getInstance().close();
     }
 
     private void promptUserForDate(String symbolToSearch) throws IOException, SQLException {
@@ -160,49 +133,9 @@ public class InputHelper {
             System.err.println(e);
         }
 
-        InputHelper inputHelper = new InputHelper();
-        inputHelper.askUserToContinue();
+        ContinueMenu continueMenu = new ContinueMenu();
+        continueMenu.askUserToContinue();
 
     }
 
-    private void displayAllRows() throws SQLException, IOException {
-
-        Connection connection = ConnectionManager.getConnection();
-
-        String sqlSelectAllStatement = "SELECT * FROM stock_quotes";
-        try (
-
-                Statement selectStatementToRun = connection.createStatement();
-                ResultSet resultSet = selectStatementToRun.executeQuery(sqlSelectAllStatement)
-        ) {
-            System.out.println("----------------------");
-            System.out.println();
-            System.out.println("- Stock Quote Table -");
-            System.out.println();
-            System.out.println("----------------------");
-
-            while(resultSet.next()) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append(resultSet.getString("id"));
-                buffer.append("  :   ");
-                buffer.append(resultSet.getString("symbol"));
-                buffer.append("  :   ");
-                buffer.append(resultSet.getString("price"));
-                buffer.append("  :   ");
-                buffer.append(resultSet.getString("volume"));
-                buffer.append("  :   ");
-                buffer.append(resultSet.getString("date"));
-
-                System.out.println(buffer.toString());
-            }
-
-
-        }
-
-        askUserToContinue();
-    }
-
-//    private void findLastRecordOfDay() {
-//        String sqlForLastRecord = "select * from stock_quotes where id in (select max(id) from stock_quotes where symbol = ? AND date like ?% group by symbol);";
-//    }
 }
