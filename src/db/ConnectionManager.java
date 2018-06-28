@@ -15,7 +15,7 @@ public class ConnectionManager {
     private static DBType dbType = DBType.MYSQL;
     private static Connection connection = null;
 
-    protected ConnectionManager() {
+    private ConnectionManager() {
     }
 
     public static ConnectionManager getInstance() {
