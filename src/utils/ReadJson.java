@@ -1,5 +1,6 @@
-package beans;
+package utils;
 
+import beans.Stock;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.InsertRecords;
 import java.io.*;

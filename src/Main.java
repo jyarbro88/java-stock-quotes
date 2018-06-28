@@ -1,4 +1,4 @@
-import beans.ReadJson;
+import utils.ReadJson;
 import db.ConnectionManager;
 import db.DBType;
 import utils.InputHelper;
