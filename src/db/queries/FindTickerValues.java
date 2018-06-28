@@ -48,23 +48,29 @@ public class FindTickerValues {
 
             if(maxResultSet.next()){
                 String maxPrice = maxResultSet.getString("price");
+                System.out.println("----------------------");
                 System.out.println("Searching " + symbolToSearch + " Quotes For: " + dateToSearch);
-                System.out.println("Max Price: " + maxPrice);
+                System.out.println("----------------------");
+                System.out.println("Max Price: $" + maxPrice);
+                System.out.println();
             }
 
             if (minResultSet.next()) {
                 String minPrice = minResultSet.getString("price");
-                System.out.println("Min Price: " + minPrice);
+                System.out.println("Min Price: $" + minPrice);
+                System.out.println();
             }
 
             if (closingResultSet.next()) {
                 String closingPrice = closingResultSet.getString("price");
-                System.out.println("Closing Price: " + closingPrice);
+                System.out.println("Closing Price: $" + closingPrice);
+                System.out.println();
             }
 
             if (totalVolumeSet.next()) {
                 Integer totalVolume = totalVolumeSet.getInt("volume");
                 System.out.println("Total Volume Traded: " + totalVolume);
+                System.out.println();
             }
         } catch (SQLException e) {
             System.err.println(e);
