@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class DisplayAll {
 
-    public void displayAllRows() throws SQLException {
+    void displayAllRows() throws SQLException {
 
         Connection connection = ConnectionManager.getConnection();
 
