@@ -7,16 +7,11 @@ public class StockManager {
 
     private static Connection connection = ConnectionManager.getConnection();
 
-//    private ConnectionManager connectionManager = new ConnectionManager();
-
-//    private MySqlConnection mySqlConnection = new MySqlConnection();
-
     public void insertRecord(Stock stockBean) {
         ResultSet keys = null;
         String sqlInsertStatement = "INSERT INTO stock_quotes (Symbol, price, volume, date) VALUES (?, ?, ?, ?);";
 
         try (
-//                Connection connection = connectionManager.getConnection();
                 PreparedStatement insertStatement = connection.prepareStatement(sqlInsertStatement, Statement.RETURN_GENERATED_KEYS)
                 ) {
             insertStatement.setString(1, stockBean.getSymbol());
@@ -36,10 +31,5 @@ public class StockManager {
         } catch (SQLException e) {
             System.err.println(e);
         }
-//        finally {
-//            if (keys != null) {
-//                keys.close();
-//            }
-//        }
     }
 }
