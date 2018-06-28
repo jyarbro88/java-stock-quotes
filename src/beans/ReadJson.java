@@ -1,7 +1,7 @@
 package beans;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import db.StockManager;
+import db.InsertRecords;
 import java.io.*;
 
 public class ReadJson {
@@ -9,7 +9,7 @@ public class ReadJson {
     public void readJsonWithObjectMapper() throws Exception {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        StockManager stockManager = new StockManager();
+        InsertRecords insertRecords = new InsertRecords();
 
         Stock[] stockList = objectMapper.readValue(new File("/Users/joeyarbrough/Projects/Java-Stock-Quotes/data/week1-stocks.json"), Stock[].class);
 
@@ -18,7 +18,7 @@ public class ReadJson {
         while (counter < (stockList.length - 1)) {
             counter++;
             try {
-                stockManager.insertRecord(stockList[counter]);
+                insertRecords.insertRecord(stockList[counter]);
             } catch (Exception e) {
                 e.printStackTrace();
             }

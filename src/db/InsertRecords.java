@@ -3,7 +3,7 @@ package db;
 import beans.Stock;
 import java.sql.*;
 
-public class StockManager {
+public class InsertRecords {
 
     private static Connection connection = ConnectionManager.getConnection();
 

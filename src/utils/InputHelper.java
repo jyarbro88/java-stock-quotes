@@ -12,7 +12,7 @@ public class InputHelper {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private Connection connection = ConnectionManager.getConnection();
 
-    private DisplayAll displayAll = new DisplayAll();
+//    private DisplayAll displayAll = new DisplayAll();
 
     public void getUserInput() throws IOException, SQLException {
 
@@ -31,7 +31,7 @@ public class InputHelper {
                 promptUserForTickerSymbolToSearch();
                 break;
             case "3":
-                displayAll.displayAllRows();
+                displayAllRows();
                 break;
 //
 //            default:
@@ -49,7 +49,7 @@ public class InputHelper {
                 getUserInput();
                 break;
             case "2":
-//                exitProgram();
+                exitProgram();
                 break;
             default:
                 break;
@@ -103,16 +103,18 @@ public class InputHelper {
         ResultSet maxResultSet = null;
         ResultSet minResultSet = null;
         ResultSet closingResultSet = null;
+        ResultSet totalVolumeSet = null;
 
         String queryForMaxPrice = "SELECT MAX(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
         String queryForMinPrice = "SELECT MIN(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
         String queryForClosingPrice = "SELECT * FROM stock_quotes WHERE id IN (SELECT MAX(id) FROM stock_quotes WHERE symbol = ? AND date LIKE ? GROUP BY symbol);";
-        String queryForTotalVolume = "SELECT SUM(volume) from stock_quotes WHERE symbol = ? AND date LIKE ?;";
+        String queryForTotalVolume = "SELECT SUM(volume) AS 'volume' from stock_quotes WHERE symbol = ? AND date LIKE ?;";
 
         try (
                 PreparedStatement preparedMaxPriceStatement = connection.prepareStatement(queryForMaxPrice);
                 PreparedStatement preparedMinPriceStatement = connection.prepareStatement(queryForMinPrice);
-                PreparedStatement preparedClosingPriceStatement = connection.prepareStatement(queryForClosingPrice)
+                PreparedStatement preparedClosingPriceStatement = connection.prepareStatement(queryForClosingPrice);
+                PreparedStatement preparedTotalVolumeStatement = connection.prepareStatement(queryForTotalVolume)
 
         ) {
 
@@ -125,15 +127,18 @@ public class InputHelper {
             preparedClosingPriceStatement.setString(1, symbolToSearch);
             preparedClosingPriceStatement.setString(2, dateToSearch + "%");
 
+            preparedTotalVolumeStatement.setString(1, symbolToSearch);
+            preparedTotalVolumeStatement.setString(2, dateToSearch + "%");
+
             maxResultSet = preparedMaxPriceStatement.executeQuery();
             minResultSet = preparedMinPriceStatement.executeQuery();
             closingResultSet = preparedClosingPriceStatement.executeQuery();
+            totalVolumeSet = preparedTotalVolumeStatement.executeQuery();
 
             if(maxResultSet.next()){
                 String maxPrice = maxResultSet.getString("price");
                 System.out.println("Searching " + symbolToSearch + " Quotes For: " + dateToSearch);
                 System.out.println("Max Price: " + maxPrice);
-
             }
 
             if (minResultSet.next()) {
@@ -145,6 +150,12 @@ public class InputHelper {
                 String closingPrice = closingResultSet.getString("price");
                 System.out.println("Closing Price: " + closingPrice);
             }
+
+            if (totalVolumeSet.next()) {
+                Integer totalVolume = totalVolumeSet.getInt("volume");
+                System.out.println("Total Volume Traded: " + totalVolume);
+
+            }
         } catch (SQLException e) {
             System.err.println(e);
         }
@@ -152,6 +163,43 @@ public class InputHelper {
         InputHelper inputHelper = new InputHelper();
         inputHelper.askUserToContinue();
 
+    }
+
+    private void displayAllRows() throws SQLException, IOException {
+
+        Connection connection = ConnectionManager.getConnection();
+
+        String sqlSelectAllStatement = "SELECT * FROM stock_quotes";
+        try (
+
+                Statement selectStatementToRun = connection.createStatement();
+                ResultSet resultSet = selectStatementToRun.executeQuery(sqlSelectAllStatement)
+        ) {
+            System.out.println("----------------------");
+            System.out.println();
+            System.out.println("- Stock Quote Table -");
+            System.out.println();
+            System.out.println("----------------------");
+
+            while(resultSet.next()) {
+                StringBuffer buffer = new StringBuffer();
+                buffer.append(resultSet.getString("id"));
+                buffer.append("  :   ");
+                buffer.append(resultSet.getString("symbol"));
+                buffer.append("  :   ");
+                buffer.append(resultSet.getString("price"));
+                buffer.append("  :   ");
+                buffer.append(resultSet.getString("volume"));
+                buffer.append("  :   ");
+                buffer.append(resultSet.getString("date"));
+
+                System.out.println(buffer.toString());
+            }
+
+
+        }
+
+        askUserToContinue();
     }
 
 //    private void findLastRecordOfDay() {
