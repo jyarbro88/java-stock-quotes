@@ -7,6 +7,7 @@ import java.io.*;
 public class ReadJson {
 
     public void readJsonWithObjectMapper() throws Exception {
+
         ObjectMapper objectMapper = new ObjectMapper();
         StockManager stockManager = new StockManager();
 
@@ -14,9 +15,13 @@ public class ReadJson {
 
         int counter = 0;
 
-        while (counter < stockList.length) {
+        while (counter < (stockList.length - 1)) {
             counter++;
-            stockManager.insertRecord(stockList[counter]);
+            try {
+                stockManager.insertRecord(stockList[counter]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
