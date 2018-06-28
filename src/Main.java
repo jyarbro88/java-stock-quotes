@@ -8,22 +8,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         ReadJson readJson = new ReadJson();
-        readJson.readJsonWithObjectMapper();
-
-        ConnectionManager.getInstance().setDbType(DBType.MYSQL);
-//        FindTickerValues inputHelper = new FindTickerValues();
-
         MainMenu mainMenu = new MainMenu();
 
+        readJson.readJsonWithObjectMapper();
+        ConnectionManager.getInstance().setDbType(DBType.MYSQL);
         mainMenu.displayMainMenu();
-
-//        inputHelper.mainMenu();
-
-//        SqlManager sqlManager = new SqlManager();
-//        sqlManager.displayAllRows();
-//
-//        sqlManager.searchForTickerValues();
-
 
     }
 }

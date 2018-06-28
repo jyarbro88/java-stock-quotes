@@ -1,13 +1,10 @@
 package utils.menus;
 
-import db.ConnectionManager;
 import db.queries.DisplayAllRecords;
 import db.queries.DisplayTickerSymbols;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MainMenu {
