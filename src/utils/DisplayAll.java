@@ -34,6 +34,8 @@ public class DisplayAll {
                 buffer.append(resultSet.getString("price"));
                 buffer.append("  :   ");
                 buffer.append(resultSet.getString("volume"));
+                buffer.append("  :   ");
+                buffer.append(resultSet.getString("date"));
 
                 System.out.println(buffer.toString());
             }

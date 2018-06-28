@@ -28,7 +28,7 @@ public class InputHelper {
                 displayListOfTickerSymbols();
                 break;
             case "2":
-                tickerSymbolToSearch();
+                promptUserForTickerSymbolToSearch();
                 break;
             case "3":
                 displayAll.displayAllRows();
@@ -62,9 +62,12 @@ public class InputHelper {
         ConnectionManager.getInstance().close();
     }
 
-    public void promptUserForDate(String symbolToSearch) {
+    private void promptUserForDate(String symbolToSearch) throws IOException, SQLException {
 
-        System.out.println("the entered symbol was: " + symbolToSearch);
+        System.out.print("Enter Date to Search (YYYY-MM-DD): ");
+        String dateToSearch = reader.readLine();
+
+        findMaxValue(symbolToSearch, dateToSearch);
 
     }
 
@@ -84,37 +87,63 @@ public class InputHelper {
             }
         }
 
-        tickerSymbolToSearch();
+        promptUserForTickerSymbolToSearch();
     }
 
-    private void tickerSymbolToSearch() throws IOException, SQLException {
-
-//        MaxPrice maxPrice = new MaxPrice();
+    private void promptUserForTickerSymbolToSearch() throws IOException, SQLException {
 
         System.out.print("Enter Stock Symbol: ");
-        String userStockInput = reader.readLine();
-        findMaxValue(userStockInput);
-        System.out.flush();
-
-
+        String userStockSymbolInput = reader.readLine();
+        promptUserForDate(userStockSymbolInput);
+//        System.out.flush();
     }
 
-    private void findMaxValue(String inputSymbol) throws SQLException, IOException {
+    private void findMaxValue(String symbolToSearch, String dateToSearch) throws SQLException, IOException {
 
-        ResultSet resultSet = null;
-        String queryForMaxPrice = "select * from stock_quotes where price in (select max(price) from stock_quotes where symbol = ? group by symbol);";
+        ResultSet maxResultSet = null;
+        ResultSet minResultSet = null;
+        ResultSet closingResultSet = null;
+
+        String queryForMaxPrice = "SELECT MAX(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
+        String queryForMinPrice = "SELECT MIN(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
+        String queryForClosingPrice = "SELECT * FROM stock_quotes WHERE id IN (SELECT MAX(id) FROM stock_quotes WHERE symbol = ? AND date LIKE ? GROUP BY symbol);";
+        String queryForTotalVolume = "SELECT SUM(volume) from stock_quotes WHERE symbol = ? AND date LIKE ?;";
+
         try (
-//                Connection connection = ConnectionManager.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(queryForMaxPrice, ResultSet.TYPE_SCROLL_INSENSITIVE);
+                PreparedStatement preparedMaxPriceStatement = connection.prepareStatement(queryForMaxPrice);
+                PreparedStatement preparedMinPriceStatement = connection.prepareStatement(queryForMinPrice);
+                PreparedStatement preparedClosingPriceStatement = connection.prepareStatement(queryForClosingPrice)
+
         ) {
 
-            preparedStatement.setString(1, inputSymbol);
-            resultSet = preparedStatement.executeQuery();
+            preparedMaxPriceStatement.setString(1, symbolToSearch);
+            preparedMaxPriceStatement.setString(2, dateToSearch + "%");
 
-            if(resultSet.next()){
-                String foundType = resultSet.getString("price");
-                System.out.println("Max Price: " + foundType);
+            preparedMinPriceStatement.setString(1, symbolToSearch);
+            preparedMinPriceStatement.setString(2, dateToSearch + "%");
 
+            preparedClosingPriceStatement.setString(1, symbolToSearch);
+            preparedClosingPriceStatement.setString(2, dateToSearch + "%");
+
+            maxResultSet = preparedMaxPriceStatement.executeQuery();
+            minResultSet = preparedMinPriceStatement.executeQuery();
+            closingResultSet = preparedClosingPriceStatement.executeQuery();
+
+            if(maxResultSet.next()){
+                String maxPrice = maxResultSet.getString("price");
+                System.out.println("Searching " + symbolToSearch + " Quotes For: " + dateToSearch);
+                System.out.println("Max Price: " + maxPrice);
+
+            }
+
+            if (minResultSet.next()) {
+                String minPrice = minResultSet.getString("price");
+                System.out.println("Min Price: " + minPrice);
+            }
+
+            if (closingResultSet.next()) {
+                String closingPrice = closingResultSet.getString("price");
+                System.out.println("Closing Price: " + closingPrice);
             }
         } catch (SQLException e) {
             System.err.println(e);
@@ -124,4 +153,8 @@ public class InputHelper {
         inputHelper.askUserToContinue();
 
     }
+
+//    private void findLastRecordOfDay() {
+//        String sqlForLastRecord = "select * from stock_quotes where id in (select max(id) from stock_quotes where symbol = ? AND date like ?% group by symbol);";
+//    }
 }
