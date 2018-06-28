@@ -1,7 +1,6 @@
 package utils.menus;
 
 import utils.ExitProgram;
-import utils.InputHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 public class ContinueMenu {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-    private InputHelper inputHelper = new InputHelper();
+    private MainMenu mainMenu = new MainMenu();
     private ExitProgram exitProgram = new ExitProgram();
 
     public void askUserToContinue() throws IOException, SQLException {
@@ -21,7 +20,7 @@ public class ContinueMenu {
 
         switch (userInput) {
             case "1":
-                inputHelper.getUserInput();
+                mainMenu.displayMainMenu();
                 break;
             case "2":
                 exitProgram.exitProgram();

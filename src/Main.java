@@ -1,7 +1,7 @@
 import utils.ReadJson;
 import db.ConnectionManager;
 import db.DBType;
-import utils.InputHelper;
+import utils.menus.MainMenu;
 
 public class Main {
 
@@ -11,14 +11,18 @@ public class Main {
         readJson.readJsonWithObjectMapper();
 
         ConnectionManager.getInstance().setDbType(DBType.MYSQL);
-        InputHelper inputHelper = new InputHelper();
+//        FindTickerValues inputHelper = new FindTickerValues();
 
-        inputHelper.getUserInput();
+        MainMenu mainMenu = new MainMenu();
+
+        mainMenu.displayMainMenu();
+
+//        inputHelper.mainMenu();
 
 //        SqlManager sqlManager = new SqlManager();
 //        sqlManager.displayAllRows();
 //
-//        sqlManager.findMaxValue();
+//        sqlManager.searchForTickerValues();
 
 
     }

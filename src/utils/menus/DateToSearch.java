@@ -1,6 +1,6 @@
 package utils.menus;
 
-import utils.InputHelper;
+import utils.FindTickerValues;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,12 +11,12 @@ public class DateToSearch {
 
     void promptUserForDate(String symbolToSearch) throws IOException, SQLException {
 
-        InputHelper inputHelper = new InputHelper();
+        FindTickerValues findTickerValues = new FindTickerValues();
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Enter Date to Search (YYYY-MM-DD): ");
         String dateToSearch = reader.readLine();
 
-        inputHelper.findMaxValue(symbolToSearch, dateToSearch);
+        findTickerValues.searchForTickerValues(symbolToSearch, dateToSearch);
 
     }
 }

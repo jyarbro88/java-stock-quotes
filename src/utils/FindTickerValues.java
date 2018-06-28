@@ -1,82 +1,20 @@
 package utils;
 
 import db.ConnectionManager;
-import db.queries.DisplayAllRecords;
-import db.queries.DisplayTickerSymbols;
 import utils.menus.ContinueMenu;
-import utils.menus.DateToSearch;
-import utils.menus.SymbolToSearch;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
 
-public class InputHelper {
+public class FindTickerValues {
 
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private Connection connection = ConnectionManager.getConnection();
-    private DisplayAllRecords displayAllRecords = new DisplayAllRecords();
-    private DisplayTickerSymbols displayListOfTickerSymbols = new DisplayTickerSymbols();
-    private SymbolToSearch symbolToSearch = new SymbolToSearch();
 
-    public void getUserInput() throws IOException, SQLException {
+    public void searchForTickerValues(String symbolToSearch, String dateToSearch) throws SQLException, IOException {
 
-        System.out.println("Stock Quote Tracker");
-        System.out.println("Press 1 to see list of Ticker Symbols:  ");
-        System.out.println("Press 2 to enter Ticker Symbol:  ");
-        System.out.println("Press 3 to display all records:  ");
-        System.out.println("Input Selection:  ");
-        String userInput = reader.readLine();
-
-        switch (userInput) {
-            case "1":
-                displayListOfTickerSymbols.displayListOfTickerSymbols();
-                break;
-            case "2":
-                symbolToSearch.promptUserForTickerSymbolToSearch();
-                break;
-            case "3":
-                displayAllRecords.displayAllRows();
-                break;
-        }
-    }
-
-
-
-//    private void displayListOfTickerSymbols() throws SQLException, IOException {
-//
-//        String sqlFindTickerSymbols = "SELECT DISTINCT(symbol) FROM stock_quotes ORDER BY symbol ASC;";
-//
-//        try (
-//
-//                Statement selectStatementToRun = connection.createStatement();
-//                ResultSet resultSet = selectStatementToRun.executeQuery(sqlFindTickerSymbols)
-//        ) {
-//            while (resultSet.next()) {
-//                StringBuffer buffer = new StringBuffer();
-//                buffer.append(resultSet.getString("symbol"));
-//                System.out.println(buffer.toString());
-//            }
-//        }
-//
-//        promptUserForTickerSymbolToSearch();
-//    }
-
-//    private void promptUserForTickerSymbolToSearch() throws IOException, SQLException {
-//
-//        System.out.print("Enter Stock Symbol: ");
-//        String userStockSymbolInput = reader.readLine();
-//        promptUserForDate(userStockSymbolInput);
-////        System.out.flush();
-//    }
-
-    public void findMaxValue(String symbolToSearch, String dateToSearch) throws SQLException, IOException {
-
-        ResultSet maxResultSet = null;
-        ResultSet minResultSet = null;
-        ResultSet closingResultSet = null;
-        ResultSet totalVolumeSet = null;
+        ResultSet maxResultSet;
+        ResultSet minResultSet;
+        ResultSet closingResultSet;
+        ResultSet totalVolumeSet;
 
         String queryForMaxPrice = "SELECT MAX(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
         String queryForMinPrice = "SELECT MIN(price) AS 'price' FROM stock_quotes WHERE symbol = ? AND date LIKE ?;";
@@ -127,15 +65,11 @@ public class InputHelper {
             if (totalVolumeSet.next()) {
                 Integer totalVolume = totalVolumeSet.getInt("volume");
                 System.out.println("Total Volume Traded: " + totalVolume);
-
             }
         } catch (SQLException e) {
             System.err.println(e);
         }
-
         ContinueMenu continueMenu = new ContinueMenu();
         continueMenu.askUserToContinue();
-
     }
-
 }
