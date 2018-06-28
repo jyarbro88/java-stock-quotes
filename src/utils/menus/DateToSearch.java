@@ -1,6 +1,6 @@
 package utils.menus;
 
-import utils.FindTickerValues;
+import db.queries.FindTickerValues;
 
 import java.io.BufferedReader;
 import java.io.IOException;

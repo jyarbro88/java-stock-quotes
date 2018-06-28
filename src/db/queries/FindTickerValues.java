@@ -1,4 +1,4 @@
-package utils;
+package db.queries;
 
 import db.ConnectionManager;
 import utils.menus.ContinueMenu;
