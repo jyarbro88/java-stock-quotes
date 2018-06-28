@@ -4,7 +4,7 @@ import db.ConnectionManager;
 
 public class ExitProgram {
 
-    void exitProgram() {
+    public void exitProgram() {
 
         System.out.println("Exiting Application.");
         ConnectionManager.getInstance().close();

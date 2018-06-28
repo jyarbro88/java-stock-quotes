@@ -1,6 +1,7 @@
-package utils;
+package db.queries;
 
 import db.ConnectionManager;
+import utils.menus.ContinueMenu;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,7 +11,7 @@ import java.sql.Statement;
 
 public class DisplayAllRecords {
 
-    void displayAllRows() throws SQLException, IOException {
+    public void displayAllRows() throws SQLException, IOException {
 
         Connection connection = ConnectionManager.getConnection();
         ContinueMenu continueMenu = new ContinueMenu();

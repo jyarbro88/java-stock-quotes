@@ -1,6 +1,11 @@
 package utils;
 
 import db.ConnectionManager;
+import db.queries.DisplayAllRecords;
+import db.queries.DisplayTickerSymbols;
+import utils.menus.ContinueMenu;
+import utils.menus.DateToSearch;
+import utils.menus.SymbolToSearch;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +17,8 @@ public class InputHelper {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private Connection connection = ConnectionManager.getConnection();
     private DisplayAllRecords displayAllRecords = new DisplayAllRecords();
+    private DisplayTickerSymbols displayListOfTickerSymbols = new DisplayTickerSymbols();
+    private SymbolToSearch symbolToSearch = new SymbolToSearch();
 
     public void getUserInput() throws IOException, SQLException {
 
@@ -24,10 +31,10 @@ public class InputHelper {
 
         switch (userInput) {
             case "1":
-                displayListOfTickerSymbols();
+                displayListOfTickerSymbols.displayListOfTickerSymbols();
                 break;
             case "2":
-                promptUserForTickerSymbolToSearch();
+                symbolToSearch.promptUserForTickerSymbolToSearch();
                 break;
             case "3":
                 displayAllRecords.displayAllRows();
@@ -35,43 +42,36 @@ public class InputHelper {
         }
     }
 
-    private void promptUserForDate(String symbolToSearch) throws IOException, SQLException {
 
-        System.out.print("Enter Date to Search (YYYY-MM-DD): ");
-        String dateToSearch = reader.readLine();
 
-        findMaxValue(symbolToSearch, dateToSearch);
+//    private void displayListOfTickerSymbols() throws SQLException, IOException {
+//
+//        String sqlFindTickerSymbols = "SELECT DISTINCT(symbol) FROM stock_quotes ORDER BY symbol ASC;";
+//
+//        try (
+//
+//                Statement selectStatementToRun = connection.createStatement();
+//                ResultSet resultSet = selectStatementToRun.executeQuery(sqlFindTickerSymbols)
+//        ) {
+//            while (resultSet.next()) {
+//                StringBuffer buffer = new StringBuffer();
+//                buffer.append(resultSet.getString("symbol"));
+//                System.out.println(buffer.toString());
+//            }
+//        }
+//
+//        promptUserForTickerSymbolToSearch();
+//    }
 
-    }
+//    private void promptUserForTickerSymbolToSearch() throws IOException, SQLException {
+//
+//        System.out.print("Enter Stock Symbol: ");
+//        String userStockSymbolInput = reader.readLine();
+//        promptUserForDate(userStockSymbolInput);
+////        System.out.flush();
+//    }
 
-    private void displayListOfTickerSymbols() throws SQLException, IOException {
-
-        String sqlFindTickerSymbols = "SELECT DISTINCT(symbol) FROM stock_quotes ORDER BY symbol ASC;";
-
-        try (
-
-                Statement selectStatementToRun = connection.createStatement();
-                ResultSet resultSet = selectStatementToRun.executeQuery(sqlFindTickerSymbols)
-        ) {
-            while (resultSet.next()) {
-                StringBuffer buffer = new StringBuffer();
-                buffer.append(resultSet.getString("symbol"));
-                System.out.println(buffer.toString());
-            }
-        }
-
-        promptUserForTickerSymbolToSearch();
-    }
-
-    private void promptUserForTickerSymbolToSearch() throws IOException, SQLException {
-
-        System.out.print("Enter Stock Symbol: ");
-        String userStockSymbolInput = reader.readLine();
-        promptUserForDate(userStockSymbolInput);
-//        System.out.flush();
-    }
-
-    private void findMaxValue(String symbolToSearch, String dateToSearch) throws SQLException, IOException {
+    public void findMaxValue(String symbolToSearch, String dateToSearch) throws SQLException, IOException {
 
         ResultSet maxResultSet = null;
         ResultSet minResultSet = null;
